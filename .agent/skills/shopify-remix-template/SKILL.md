@@ -25,10 +25,10 @@ A typical Remix app structure:
         *   `app._index.tsx`: The main dashboard page.
         *   `app.tsx`: The root layout for the authenticated app.
         *   `webhooks.tsx`: Webhook handler.
-    *   `shopify.server.ts`: **Critical**. Initializes the Shopify API client, authentication, and session storage.
-    *   `db.server.ts`: Database connection (Prisma by default).
+    *   `shopify.server.ts`: **Critical**. Initializes the Shopify API client, authentication, and session storage (Redis).
+    *   `db.server.ts`: Database connection (Mongoose).
+    *   `models/`: Mongoose models (e.g., `Session.ts`, `Shop.ts`).
     *   `root.tsx`: The root component for the entire application.
-*   `prisma/`: Database schema (`schema.prisma`) and migrations.
 *   `shopify.app.toml`: Main app configuration file.
 
 ## 🔐 Authentication & Sessions
@@ -36,19 +36,31 @@ A typical Remix app structure:
 The template uses `@shopify/shopify-app-remix` to handle authentication automatically.
 
 ### `shopify.server.ts`
-This file exports an `authenticate` object used in loaders and actions.
+This file exports an `authenticate` object used in loaders and actions. It is configured to use **Redis** for session storage.
 
 ```typescript
 import { shopifyApp } from "@shopify/shopify-app-remix/server";
-// ...
+import { RedisSessionStorage } from "@shopify/shopify-app-session-storage-redis";
+import { restResources } from "@shopify/shopify-api/rest/admin/2024-01";
+
+const sessionDb = new RedisSessionStorage(
+  new URL(process.env.REDIS_URL!)
+);
+
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
   appUrl: process.env.SHOPIFY_APP_URL,
   scopes: process.env.SCOPES?.split(","),
-  // ...
+  apiVersion: "2024-01",
+  sessionStorage: sessionDb,
+  isEmbeddedApp: true,
+  restResources,
 });
+
 export const authenticate = shopify.authenticate;
+export const apiVersion = "2024-01";
+export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 ```
 
 ### Usage in Loaders (Data Fetching)
@@ -76,13 +88,59 @@ To add a webhook:
 1.  Add configuration in `shopify.server.ts`.
 2.  Handle the topic in the `action` of `app/routes/webhooks.tsx`.
 
-## 🗄️ Database (Prisma)
+## 🗄️ Database (Mongoose/MongoDB)
 
-The template defaults to **Prisma** with **SQLite** for local dev.
-*   **Schema:** `prisma/schema.prisma`.
-*   **Session Storage:** `PrismaSessionStorage` is used to store Shopify sessions in the database.
+Use **Mongoose** for persistent data storage (Shops, Settings, etc.).
 
-> **Tip:** For production, switch the Prisma provider to PostgreSQL or MySQL.
+### `app/db.server.ts`
+Singleton connection to MongoDB.
+
+```typescript
+import mongoose from "mongoose";
+
+let isConnected = false;
+
+export const connectDb = async () => {
+  if (isConnected) return;
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI!);
+    isConnected = true;
+    console.log("🚀 Connected to MongoDB");
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error);
+  }
+};
+```
+
+### `app/models/Shop.ts` (Example)
+
+```typescript
+import mongoose from "mongoose";
+
+const ShopSchema = new mongoose.Schema({
+  shop: { type: String, required: true, unique: true },
+  accessToken: { type: String, required: true },
+  isInstalled: { type: Boolean, default: true },
+});
+
+export const Shop = mongoose.models.Shop || mongoose.model("Shop", ShopSchema);
+```
+
+### Usage in Loaders
+Connect to the DB before using models.
+
+```typescript
+import { connectDb } from "../db.server";
+import { Shop } from "../models/Shop";
+
+export const loader = async ({ request }) => {
+  await connectDb();
+  // ...
+  const shopData = await Shop.findOne({ shop: session.shop });
+  // ...
+};
+```
 
 ## 🎨 UI & Design (Polaris)
 
