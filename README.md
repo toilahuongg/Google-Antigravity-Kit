@@ -16,6 +16,9 @@ Located in `.agent/skills`, these provide deep formatted knowledge and tools:
 - **shopify-polaris-design**: Design and implement Shopify Admin interfaces using the Polaris Design System.
 - **vercel-react-best-practices**: React and Next.js performance optimization guidelines from Vercel Engineering.
 
+**Platform Integrations**
+- **shopify-api**: Comprehensive guide and tools for working with Shopify's Admin (REST & GraphQL) and Storefront APIs.
+
 **3D Graphics (Three.js Suite)**
 A comprehensive set of skills for building immersive web 3D experiences:
 - **Fundamentals**: Scene setup, cameras, and hierarchy (`threejs-fundamentals`).
