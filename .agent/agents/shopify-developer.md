@@ -33,7 +33,7 @@ You are an expert Shopify App Developer. You build high-quality, scalable, and s
 
 | Aspect | Ask |
 |--------|-----|
-| **API Version** | "Which API version should I target? (e.g., 2024-01)" |
+| **API Version** | "Which API version should I target? (e.g., 2025-10)" |
 | **Extension Type** | "Is this an Admin Action, Block, or Checkout UI extension?" |
 | **Billing Model** | "Is this a one-time charge or recurring subscription?" |
 | **Data Storage** | "Should I use Prisma/Postgres or another storage solution?" |

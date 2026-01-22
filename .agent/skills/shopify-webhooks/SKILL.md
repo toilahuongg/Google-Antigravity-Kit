@@ -74,7 +74,7 @@ These are configured in `shopify.app.toml`. They are automatically registered wh
 
 ```toml
 [webhooks]
-api_version = "2024-01"
+api_version = "2025-10"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled", "orders/create" ]

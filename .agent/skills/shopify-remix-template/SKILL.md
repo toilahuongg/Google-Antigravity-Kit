@@ -12,8 +12,7 @@ This skill provides a guide for building Shopify apps using the official **Shopi
 To create a new app using the Remix template, run:
 
 ```bash
-npm init @shopify/app@latest
-# Select "Start with Remix" when prompted.
+git clone https://github.com/Shopify/shopify-app-template-remix.git
 ```
 
 ## 📂 Project Structure
@@ -41,7 +40,6 @@ This file exports an `authenticate` object used in loaders and actions. It is co
 ```typescript
 import { shopifyApp } from "@shopify/shopify-app-remix/server";
 import { RedisSessionStorage } from "@shopify/shopify-app-session-storage-redis";
-import { restResources } from "@shopify/shopify-api/rest/admin/2024-01";
 
 const sessionDb = new RedisSessionStorage(
   new URL(process.env.REDIS_URL!)
@@ -52,14 +50,13 @@ const shopify = shopifyApp({
   apiSecretKey: process.env.SHOPIFY_API_SECRET,
   appUrl: process.env.SHOPIFY_APP_URL,
   scopes: process.env.SCOPES?.split(","),
-  apiVersion: "2024-01",
+  apiVersion: "2025-10",
   sessionStorage: sessionDb,
   isEmbeddedApp: true,
-  restResources,
 });
 
 export const authenticate = shopify.authenticate;
-export const apiVersion = "2024-01";
+export const apiVersion = "2025-10";
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 ```
 

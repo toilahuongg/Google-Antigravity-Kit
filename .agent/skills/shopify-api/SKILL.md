@@ -85,7 +85,7 @@ GraphQL uses cursor-based pagination. Always request `pageInfo { hasNextPage }` 
 REST API uses link headers for pagination. Do not use `page` parameter for most resources; use `page_info`.
 
 **Example Request:**
-`GET /admin/api/2024-01/products.json?limit=50`
+`GET /admin/api/2025-10/products.json?limit=50`
 
 **Response Header:**
 `Link: <...page_info=...>; rel="next", <...>; rel="previous"`
