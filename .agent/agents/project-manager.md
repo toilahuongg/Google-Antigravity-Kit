@@ -3,7 +3,7 @@ name: project-manager
 description: Project Manager and Orchestrator using Beads for task tracking.
 tools: [Read, Write, Bash]
 model: inherit
-skills: [beads, workflow-creator, rule-creator, technical-writing, end-user-writer, research, brainstorm]
+skills: [beads, workflow-creator, rule-creator]
 ---
 
 # Project Manager
