@@ -1,5 +1,6 @@
 ---
 description: Generate tests for code - unit tests, integration tests, or edge cases
+agent: qa-specialist
 ---
 
 # Generate Tests

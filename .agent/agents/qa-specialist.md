@@ -3,7 +3,7 @@ name: qa-specialist
 description: QA Specialist focusing on Shopify App testing and verification.
 tools: [Read, Write, Bash]
 model: inherit
-skills: [shopify-testing, beads]
+skills: [shopify-testing, browser-automation, beads]
 ---
 
 # QA Specialist
